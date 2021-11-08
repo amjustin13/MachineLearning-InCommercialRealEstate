@@ -1,13 +1,13 @@
 import flask
 import json
-from flask import request, jsonify
+from flask import request, jsonify, Response
 import tensorflow as tf
 import tensorflow_text
 import numpy as np
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
-model = tf.saved_model.load("../../boston_DS_bert_noID/2")
+model = tf.saved_model.load("./models/latest")
 class_names = ["Amendment_to_a_Long_Form", "Certificate_of_Occupancy", "Electrical_Fire_Alarms", "Electrical_Low_Voltage", "Electrical_Permit", "Electrical_Temporary_Service", "Erect_New_Construction", "Excavation_Permit", "Foundation_Permit", "Gas_Permit", "Long_Form_Alteration_Permit", "Plumbing_Permit", "Short_Form_Bldg_Permit", "Use_of_Premises"]
 @app.route('/', methods=['GET'])
 def hello():
@@ -38,9 +38,16 @@ expected request body:
 
 output: list of predictions 
 """
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['GET'])
 def predict():
-    input = tf.constant(request.get_json()['instances'])
+    input = None
+    try:
+        input = request.get_json()['instances']
+        if len(input) == 0:
+            raise 
+        input = tf.constant(input)
+    except:
+        return Response("Invalid input. Please send JSON with a key of 'instances' and a value of a list of input strings", 400)
     res = model(input)
     max_ind = np.argmax(res.numpy(), axis=1)
     ret = []
