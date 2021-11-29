@@ -71,7 +71,13 @@ Sprint #3 (18 Oct 2021 to 31 Oct 2021):
 - Demo3 Link: https://www.youtube.com/watch?v=P2m0KtebSH0
 
 Sprint #4 (1 Nov 2021 to 14 Nov 2021):
-TDB
+- Create DevOps/CI bash script
+- Make API route more robust by handling user inputs
+- Image generation task research
+- Multi-city data collection
+- Retrain model
+
+- Demo4 Link: https://www.youtube.com/watch?v=jZrKYecOzNI&t=8s&ab_channel=KhoaTran
 
 Sprint #5 (15 Nov 2021 to 28 Nov 2021):
 TBD
