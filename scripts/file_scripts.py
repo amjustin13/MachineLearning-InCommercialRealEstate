@@ -1,4 +1,90 @@
 import os
+import random
+
+def count_permit_types(csv_permit_file):
+	mapping = {
+		"Building Permit": 0, 
+		"Electrical Permit": 0, 
+		"Mechanical Permit": 0, 
+		"Plumbing Permit": 0
+	}
+	permit_types = mapping.keys()
+
+	with open(csv_permit_file, encoding="utf8") as p_file:
+		permits = p_file.readlines()
+		permits = [permit.rstrip() for permit in permits]
+		
+		for permit_type in permit_types:
+			for permit in permits:
+				if permit:
+					if permit_type in permit:
+						mapping[permit_type] += 1
+		
+		print(mapping)
+		return mapping
+
+def org_data_for_training(csv_permit_file):
+	mapping = {
+		"Building Permit": 0, 
+		"Electrical Permit": 0, 
+		"Mechanical Permit": 0, 
+		"Plumbing Permit": 0
+	}
+	permit_types = mapping.keys()
+
+	with open(csv_permit_file, encoding="utf8") as p_file:
+		permits = p_file.readlines()
+		permits = [permit.rstrip() for permit in permits]
+		
+		for i in range(len(permits)):
+			isValid = False
+			for permit_type in permit_types:
+				if permit_type in permits[i]:
+					mapping[permit_type] += 1
+					isValid = True
+			if not isValid:
+				permits[i] = '-1'
+		
+		permits = [permit for permit in permits if permit != '-1']
+		y = [permit.split(',')[0] for permit in permits]
+		x = [','.join(permit.split(',')[1:]) for permit in permits]
+
+		print(mapping)
+		assert len(x) == len(y)
+
+		labels_to_dirs = {
+			"Building Permit": "building_permit", 
+			"Electrical Permit": "electrical_permit", 
+			"Mechanical Permit": "mechanical_permit", 
+			"Plumbing Permit": "plumbing_permit"
+		}
+
+		labels_count = {
+			"Building Permit": [0, 0, 0], 
+			"Electrical Permit": [0, 0, 0], 
+			"Mechanical Permit": [0, 0, 0], 
+			"Plumbing Permit": [0, 0, 0]
+		}
+
+		p_folder = "training_v4"
+		
+		for i in range(len(x)):
+				dir_name = labels_to_dirs[y[i]]
+				train_count = labels_count[y[i]][1]
+				test_count = labels_count[y[i]][2]
+
+				if random.uniform(0, 1) < 0.8:
+					f = open(os.path.join(p_folder, "train", dir_name, f"{train_count}.txt"), 'w')
+					f.write(x[i])
+					f.close()
+					labels_count[y[i]][1] += 1
+				else:
+					f = open(os.path.join(p_folder, "test", dir_name, f"{test_count}.txt"), 'w')
+					f.write(x[i])
+					f.close()
+					labels_count[y[i]][2] += 1
+				labels_count[y[i]][0] += 1
+
 
 def make_line_files(x_file_path, y_file_path):
 	with open(x_file_path) as x_file:
@@ -96,18 +182,18 @@ def truncate_data(x_file_path, y_file_path):
 								"Plumbing Permit": 				69424, 
 								"Use of Premises": 				1285
 							}
-				
+			p_folder = "training_v2"
 			for i in range(len(x_lines)):
 				dir_name = labels_to_dirs[y_lines[i]]
 				count = labels_count[y_lines[i]]
 				if count < 12000:
 					cap = labels_total[y_lines[i]]*.8 if labels_total[y_lines[i]] < 10000 else 10000
 					if count < cap:
-						f = open(os.path.join("train", dir_name, f"{count}.txt"), 'w')
+						f = open(os.path.join(p_folder, "train", dir_name, f"{count}.txt"), 'w')
 						f.write(x_lines[i])
 						f.close()
 					else:
-						f = open(os.path.join("test", dir_name, f"{count - cap}.txt"), 'w')
+						f = open(os.path.join(p_folder, "test", dir_name, f"{count - cap}.txt"), 'w')
 						f.write(x_lines[i])
 						f.close()
 					labels_count[y_lines[i]] += 1
@@ -119,5 +205,6 @@ def truncate_data(x_file_path, y_file_path):
 if __name__ == "__main__":
 	# make_line_files("X_BostonDataSet.csv", "y_BostonDataSet.csv")
 	# count_ds_labels("y_BostonDataSet.csv")
-	truncate_data("X_BostonDataSet.csv", "y_BostonDataSet.csv")
+	# truncate_data("X_comments_BostonDataSet.csv", "y_BostonDataSet.csv")
+	org_data_for_training("./clean_AllCitiesDataSet.csv")
 
