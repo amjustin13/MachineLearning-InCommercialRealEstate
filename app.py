@@ -11,6 +11,8 @@ model = None
 # bos_class_names = ["Amendment_to_a_Long_Form", "Certificate_of_Occupancy", "Electrical_Fire_Alarms", "Electrical_Low_Voltage", "Electrical_Permit", "Electrical_Temporary_Service", "Erect_New_Construction", "Excavation_Permit", "Foundation_Permit", "Gas_Permit", "Long_Form_Alteration_Permit", "Plumbing_Permit", "Short_Form_Bldg_Permit", "Use_of_Premises"]
 four_class_names = ["building_permit", "electrical_permit",
                     "plumbing_permit", "mechanical_permit"]
+
+# change here to run the appropriate model
 RUN_BINARY = False
 if RUN_BINARY:
     model = tf.saved_model.load("../binary_model")
