@@ -101,7 +101,7 @@ Anqi Guo:
 anqianqi1
 
 # Running App in Docker Container
-
+For manual setup
 - From within the directory containing the Dockerfile run the following to build the docker image:
 
   - `docker build -t webapp-build:latest . `
@@ -110,7 +110,12 @@ anqianqi1
   - `docker image ls`
 
 - Finally, in order to run the app:
-  - `docker run -d -p 5000:5000 webapp-build`
+  - `docker run --name nameofcontainer -d webapp-build`
 
 - Now, the app should be availble at (use Postman or a browset to verify):
-  - `http://127.0.0.1:5000/`
+  - `docker exec -it nameofcontainer /bin/bash`
+- Once you are in the container:
+  - `python api.py`
+Automatically setup
+- Run the get.sh script
+  - `get.sh nameofcontainer`
