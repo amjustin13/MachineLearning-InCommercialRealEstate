@@ -116,6 +116,7 @@ For manual setup
   - `docker exec -it nameofcontainer /bin/bash`
 - Once you are in the container:
   - `python api.py`
+
 Automatically setup
 - Run the get.sh script
   - `get.sh nameofcontainer`
